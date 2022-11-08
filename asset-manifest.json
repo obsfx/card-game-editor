@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/card-game-editor/static/css/main.58462fbc.css",
+    "main.js": "/card-game-editor/static/js/main.3c876679.js",
+    "index.html": "/card-game-editor/index.html",
+    "main.58462fbc.css.map": "/card-game-editor/static/css/main.58462fbc.css.map",
+    "main.3c876679.js.map": "/card-game-editor/static/js/main.3c876679.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.58462fbc.css",
+    "static/js/main.3c876679.js"
+  ]
+}
