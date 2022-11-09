@@ -104,7 +104,6 @@ const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, c
       />
       {active && (
         <>
-          <div className={highlighter(pos, frame.w, frame.h, rot)} />
           <div className={cardHud(pos, frame.w, frame.h)}>
             <div className={cardHudRow}>
               <span>rotation</span>
@@ -171,7 +170,7 @@ const highlighter = (pos: [number, number], w: number, h: number, rot: number) =
     position: 'absolute',
     left: pos[0] - w / 2,
     top: pos[1] - h / 2,
-    zIndex: 1,
+    zIndex: 998,
     transform: `rotate(${rot}deg)`,
   });
 
@@ -181,7 +180,7 @@ const cardHud = (pos: [number, number], w: number, h: number) =>
     backgroundColor: '#fff',
     border: '1px solid #f5f5f5',
     cursor: 'pointer',
-    zIndex: 99,
+    zIndex: 999,
     marginTop: 4,
     padding: 5,
     marginLeft: 80,

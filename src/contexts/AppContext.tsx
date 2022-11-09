@@ -35,17 +35,19 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     return {
       x:
         x < BOARD_W / 2
-          ? (-BOUND_X / (BOARD_W / 2)) * (BOARD_W / 2 - x)
+          ? -(BOUND_X / (BOARD_W / 2)) * (BOARD_W / 2 - x)
           : (BOUND_X / (BOARD_W / 2)) * (x - BOARD_W / 2),
       y:
         y < BOARD_H / 2
-          ? (-BOUND_Y / (BOARD_H / 2)) * (BOARD_H / 2 - y)
-          : (BOUND_Y / (BOARD_H / 2)) * (y - BOARD_H / 2),
+          ? (BOUND_Y / (BOARD_H / 2)) * (BOARD_H / 2 - y)
+          : -(BOUND_Y / (BOARD_H / 2)) * (y - BOARD_H / 2),
     };
   };
 
   useEffect(() => {
+    console.log(cards);
     const sortedCards = cards.sort((a, b) => a.zIndex - b.zIndex);
+    console.log(sortedCards);
     const output: Record<string, unknown[]> = {
       tableArray: [],
     };

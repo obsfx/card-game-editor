@@ -21,7 +21,7 @@ const SelectedCardPreview: React.FC = () => {
       frame,
       angle: 0,
       value: 1,
-      kind: 1,
+      kind: 0,
       x: 0,
       y: 0,
       zIndex: 1,
