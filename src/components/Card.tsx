@@ -4,14 +4,12 @@ import { useAppContext } from '../contexts/AppContext';
 import { Card as ICard, Frame } from '../types';
 import CardHud from './CardHud';
 
-const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, card, frame }) => {
+const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
   const { imageB64, updateCard } = useAppContext();
 
   const [dragStartPos, setDragStartPos] = useState<[number, number]>([0, 0]);
 
   const [position, setPosition] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
-  const [rotation, setRotation] = useState(card.angle);
-  const [zIndex, setZIndex] = useState(card.zIndex);
 
   const [showHud, setShowHud] = useState(false);
   const [onHover, setOnHover] = useState(false);
@@ -33,22 +31,20 @@ const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, c
     setPosition([currentX + diffX, currentY + diffY]);
     setDragStartPos([event.clientX, event.clientY]);
 
-    updateCard(index, {
+    updateCard(card.id, {
       x: newX,
       y: newY,
     });
   };
 
   const handleIndexChange = (zIndex: number) => {
-    setZIndex(zIndex);
-    updateCard(index, {
-      zIndex: zIndex,
+    updateCard(card.id, {
+      zIndex,
     });
   };
 
   const handleRotationChange = (angle: number) => {
-    setRotation(angle);
-    updateCard(index, {
+    updateCard(card.id, {
       ...card,
       angle,
     });
@@ -57,7 +53,7 @@ const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, c
   return (
     <>
       <div
-        data-clickout-id={`hud-parent-${index}`}
+        data-clickout-id={`hud-parent-${card.id}`}
         className={cardWrapper(
           imageB64,
           position,
@@ -65,8 +61,8 @@ const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, c
           frame.y,
           frame.w,
           frame.h,
-          rotation,
-          zIndex
+          card.angle,
+          card.zIndex
         )}
         onMouseEnter={() => setOnHover(true)}
         onMouseLeave={() => {
@@ -86,8 +82,8 @@ const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, c
         <CardHud
           card={card}
           position={position}
-          rotation={rotation}
-          zIndex={zIndex}
+          rotation={card.angle}
+          zIndex={card.zIndex}
           handleRotationChange={handleRotationChange}
           handleIndexChange={handleIndexChange}
           onClose={() => setShowHud(false)}

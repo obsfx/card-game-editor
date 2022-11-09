@@ -13,17 +13,12 @@ const CardHud: React.FC<{
   onClose: () => void;
 }> = ({ card, position, rotation, zIndex, handleRotationChange, handleIndexChange, onClose }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  useClickOutListener(cardRef, (target: HTMLElement) => {
-    if (target.dataset.clickoutId) {
-      return;
-    }
-    onClose();
-  });
+  useClickOutListener(cardRef, onClose, [`hud-parent-${card.id}`]);
 
   return (
     <div ref={cardRef} className={cardHud(position, card.frame.w, card.frame.h)}>
       <div className={cardHudRow}>
-        <span>rotation</span>
+        <span>Rootation</span>
         <input
           type="range"
           min="-360"
@@ -34,19 +29,19 @@ const CardHud: React.FC<{
         <input type="text" disabled={true} value={rotation} />
       </div>
       <div className={cardHudRow}>
-        <span>index</span>
+        <span>Depth</span>
         <button onClick={() => handleIndexChange(zIndex - 1)}>{'<'}</button>
         <button onClick={() => handleIndexChange(zIndex + 1)}>{'>'}</button>
         <input type="text" disabled={true} value={zIndex} />
       </div>
 
       <div className={cardHudRow}>
-        <span>value</span>
+        <span>Value</span>
         <input type="text" disabled={true} value={card.value} />
       </div>
 
       <div className={cardHudRow}>
-        <span>kind</span>
+        <span>Kind</span>
         <input type="text" disabled={true} value={card.kind} />
       </div>
     </div>

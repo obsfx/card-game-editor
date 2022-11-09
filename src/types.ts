@@ -14,6 +14,7 @@ export interface AtlasData {
 }
 
 export interface Card {
+  id: string;
   frame: Frame;
   value: number;
   kind: number;
@@ -21,4 +22,10 @@ export interface Card {
   x: number;
   y: number;
   zIndex: number;
+}
+
+export interface SelectedCard {
+  value: number;
+  kind: number;
+  frame: Frame;
 }

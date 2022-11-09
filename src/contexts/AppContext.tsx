@@ -1,17 +1,21 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
-import { AtlasData, Card, Frame } from '../types';
+import { v4 as uuidv4 } from 'uuid';
+
+import { CARD, CARD_SUIT } from '../contants';
+import { AtlasData, Card, Frame, SelectedCard } from '../types';
 
 export interface IAppContext {
   json: AtlasData | null;
   setJson: Dispatch<SetStateAction<AtlasData | null>>;
   imageB64: string;
   setImageB64: Dispatch<SetStateAction<string>>;
-  selectedCard: Card | null;
-  setSelectedCard: Dispatch<SetStateAction<Card | null>>;
+  selectedCard: SelectedCard | null;
+  setSelectedCard: Dispatch<SetStateAction<SelectedCard | null>>;
   cards: Card[];
   setCards: Dispatch<SetStateAction<Card[]>>;
   output: Record<string, unknown[]>;
-  updateCard: (index: number, props: Record<string, unknown>) => void;
+  createCard: (cardValue: number, suitValue: number) => void;
+  updateCard: (index: string, props: Record<string, unknown>) => void;
 }
 
 const AppContext = React.createContext<IAppContext | null>(null);
@@ -23,14 +27,37 @@ export const useAppContext = () => {
 export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [json, setJson] = useState<AtlasData | null>(null);
   const [imageB64, setImageB64] = useState('');
-  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [selectedCard, setSelectedCard] = useState<SelectedCard | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [output, setOutput] = useState<Record<string, unknown[]>>({ tableArray: [] });
 
-  const updateCard = (index: number, props: Record<string, unknown>) => {
+  const createCard = (cardValue: number, suitValue: number) => {
+    if (!json) {
+      return;
+    }
+
+    const imageKey = `${CARD[cardValue - 1]}_${CARD_SUIT[suitValue]}.png`;
+    const frame = json.frames[imageKey].frame;
+    setCards((prev) => [
+      ...prev,
+      {
+        id: uuidv4(),
+        frame,
+        angle: 0,
+        value: cardValue || 1,
+        kind: suitValue,
+        x: 0,
+        y: 0,
+        zIndex: cards.length,
+      },
+    ]);
+  };
+
+  const updateCard = (id: string, props: Record<string, unknown>) => {
     setCards((prev) =>
-      prev.map((card, idx) => {
-        if (idx !== index) {
+      prev.map((card) => {
+        console.log('tick', card.id !== id, card.id, id, props);
+        if (card.id !== id) {
           return card;
         }
 
@@ -92,6 +119,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         cards,
         setCards,
         output,
+        createCard,
         updateCard,
       }}
     >

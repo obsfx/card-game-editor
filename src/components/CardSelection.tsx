@@ -4,49 +4,29 @@ import { CARD, CARD_SUIT } from '../contants';
 import { useAppContext } from '../contexts/AppContext';
 
 const CardSelection: React.FC = () => {
-  const { json, imageB64, cards, selectedCard, setSelectedCard, setCards } = useAppContext();
-  const [val, setVal] = useState('{}');
+  const { json, imageB64, createCard, selectedCard } = useAppContext();
+  const [data, setData] = useState({ value: 1, kind: 0 });
 
   if (!json || !imageB64) {
     return null;
   }
 
   const handleCardSelect = (event: ChangeEvent<HTMLSelectElement>) => {
-    setVal(event.target.value);
     const data = JSON.parse(event.target.value);
-    const frame = json.frames[data.imageKey].frame;
-    console.log(data, {
-      frame,
-      angle: 0,
-      value: data.value,
-      kind: data.kind,
-      x: 0,
-      y: 0,
-      zIndex: cards.length,
-    });
-    setSelectedCard({
-      frame,
-      angle: 0,
-      value: data.value,
-      kind: data.kind,
-      x: 0,
-      y: 0,
-      zIndex: cards.length,
-    });
+    setData(data);
   };
 
-  const handleCardAdd = (e: any) => {
+  const handleCardAdd = () => {
     if (!selectedCard) {
       return;
     }
-
-    setCards((prev) => [...prev, selectedCard]);
+    createCard(data.value, data.kind);
   };
 
   return (
     <div>
       <div>
-        <select onChange={handleCardSelect} value={val}>
+        <select onChange={handleCardSelect}>
           {CARD.map((card, cardIdx) => {
             return CARD_SUIT.map((cardSuit, suitIdx) => {
               const imageKey = `${card}_${cardSuit}.png`;
@@ -54,7 +34,6 @@ const CardSelection: React.FC = () => {
                 <option
                   key={imageKey}
                   value={JSON.stringify({
-                    imageKey: imageKey,
                     value: cardIdx + 1,
                     kind: suitIdx,
                   })}

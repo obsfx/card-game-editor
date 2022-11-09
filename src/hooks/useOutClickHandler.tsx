@@ -2,7 +2,8 @@ import { useCallback, useEffect } from 'react';
 
 export const useClickOutListener = (
   containerRef: React.MutableRefObject<any>,
-  onClick: (target: HTMLElement) => void
+  onClick: () => void,
+  excludedTargetsDataIDs: string[] = []
 ) => {
   const handleOutClick = useCallback(
     (e: Event) => {
@@ -11,9 +12,13 @@ export const useClickOutListener = (
         return;
       }
 
-      onClick(target);
+      if (target.dataset.clickoutId && excludedTargetsDataIDs.includes(target.dataset.clickoutId)) {
+        return;
+      }
+
+      onClick();
     },
-    [containerRef, onClick]
+    [containerRef, onClick, excludedTargetsDataIDs]
   );
 
   useEffect(() => {

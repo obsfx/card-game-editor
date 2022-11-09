@@ -8,9 +8,10 @@ const BoardPreview: React.FC = () => {
 
   return (
     <div className={boardPreview}>
-      {cards.map((card, idx) => (
-        <Card key={idx} index={idx} card={card} frame={card.frame} />
-      ))}
+      {cards.map((card, idx) => {
+        console.log(card);
+        return <Card key={card.id} card={card} frame={card.frame} />;
+      })}
     </div>
   );
 };
