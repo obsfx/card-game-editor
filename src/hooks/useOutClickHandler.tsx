@@ -2,21 +2,18 @@ import { useCallback, useEffect } from 'react';
 
 export const useClickOutListener = (
   containerRef: React.MutableRefObject<any>,
-  onClose: () => void
+  onClick: (target: HTMLElement) => void
 ) => {
   const handleOutClick = useCallback(
-    (e: any) => {
-      if (containerRef && containerRef.current) {
-        if (containerRef.current.contains(e.target)) {
-          return;
-        }
-
-        if (onClose) {
-          onClose();
-        }
+    (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (!containerRef || !containerRef.current || containerRef.current.contains(target)) {
+        return;
       }
+
+      onClick(target);
     },
-    [containerRef, onClose]
+    [containerRef, onClick]
   );
 
   useEffect(() => {

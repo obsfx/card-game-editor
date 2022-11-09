@@ -11,6 +11,7 @@ export interface IAppContext {
   cards: Card[];
   setCards: Dispatch<SetStateAction<Card[]>>;
   output: Record<string, unknown[]>;
+  updateCard: (index: number, props: Record<string, unknown>) => void;
 }
 
 const AppContext = React.createContext<IAppContext | null>(null);
@@ -25,6 +26,21 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [output, setOutput] = useState<Record<string, unknown[]>>({ tableArray: [] });
+
+  const updateCard = (index: number, props: Record<string, unknown>) => {
+    setCards((prev) =>
+      prev.map((card, idx) => {
+        if (idx !== index) {
+          return card;
+        }
+
+        return {
+          ...card,
+          ...props,
+        };
+      })
+    );
+  };
 
   const calculateTablePos = (x: number, y: number) => {
     const BOUND_X = 540;
@@ -45,9 +61,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   useEffect(() => {
-    console.log(cards);
     const sortedCards = cards.sort((a, b) => a.zIndex - b.zIndex);
-    console.log(sortedCards);
     const output: Record<string, unknown[]> = {
       tableArray: [],
     };
@@ -78,6 +92,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         cards,
         setCards,
         output,
+        updateCard,
       }}
     >
       {children}

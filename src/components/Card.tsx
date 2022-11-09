@@ -2,95 +2,76 @@ import React, { useState, MouseEvent, useRef } from 'react';
 import { css } from '@emotion/css';
 import { useAppContext } from '../contexts/AppContext';
 import { Card as ICard, Frame } from '../types';
-import { useClickOutListener } from '../hooks/useOutClickHandler';
+import CardHud from './CardHud';
 
 const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, card, frame }) => {
-  const { imageB64, setCards } = useAppContext();
+  const { imageB64, updateCard } = useAppContext();
 
-  const cardRef = useRef<HTMLDivElement>(null);
-  useClickOutListener(cardRef, () => setActive(false));
-
-  const [pos, setPos] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
   const [dragStartPos, setDragStartPos] = useState<[number, number]>([0, 0]);
 
-  const [active, setActive] = useState(false);
+  const [position, setPosition] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
+  const [rotation, setRotation] = useState(card.angle);
+  const [zIndex, setZIndex] = useState(card.zIndex);
+
+  const [showHud, setShowHud] = useState(false);
   const [onHover, setOnHover] = useState(false);
   const [onHold, setOnHold] = useState(false);
 
-  const [rot, setRot] = useState(card.angle);
-  const [zIndex, setZIndex] = useState(card.zIndex);
-
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (onHover && onHold) {
-      const [x, y] = dragStartPos;
-      const diffX = event.clientX - x;
-      const diffY = event.clientY - y;
-
-      const [currentX, currentY] = pos;
-
-      const newX = currentX + diffX;
-      const newY = currentY + diffY;
-      setPos([currentX + diffX, currentY + diffY]);
-
-      setDragStartPos([event.clientX, event.clientY]);
-
-      setCards((prev) =>
-        prev.map((card, idx) => {
-          if (idx !== index) {
-            return card;
-          }
-
-          return {
-            ...card,
-            x: newX,
-            y: newY,
-          };
-        })
-      );
+    if (!onHover || !onHold) {
+      return;
     }
+
+    const [x, y] = dragStartPos;
+    const [currentX, currentY] = position;
+
+    const diffX = event.clientX - x;
+    const diffY = event.clientY - y;
+    const newX = currentX + diffX;
+    const newY = currentY + diffY;
+
+    setPosition([currentX + diffX, currentY + diffY]);
+    setDragStartPos([event.clientX, event.clientY]);
+
+    updateCard(index, {
+      x: newX,
+      y: newY,
+    });
   };
 
   const handleIndexChange = (zIndex: number) => {
     setZIndex(zIndex);
-    setCards((prev) =>
-      prev.map((card, idx) => {
-        if (idx !== index) {
-          return card;
-        }
-
-        return {
-          ...card,
-          zIndex: zIndex,
-        };
-      })
-    );
+    updateCard(index, {
+      zIndex: zIndex,
+    });
   };
 
-  const handleRotChange = (angle: number) => {
-    setRot(angle);
-    setCards((prev) =>
-      prev.map((card, idx) => {
-        if (idx !== index) {
-          return card;
-        }
-
-        return {
-          ...card,
-          angle,
-        };
-      })
-    );
+  const handleRotationChange = (angle: number) => {
+    setRotation(angle);
+    updateCard(index, {
+      ...card,
+      angle,
+    });
   };
 
   return (
     <>
       <div
-        ref={cardRef}
-        className={cardWrapper(imageB64, pos, frame.x, frame.y, frame.w, frame.h, rot, zIndex)}
+        data-clickout-id={`hud-parent-${index}`}
+        className={cardWrapper(
+          imageB64,
+          position,
+          frame.x,
+          frame.y,
+          frame.w,
+          frame.h,
+          rotation,
+          zIndex
+        )}
         onMouseEnter={() => setOnHover(true)}
         onMouseLeave={() => {
           setOnHover(false);
-          setOnHold(false);
+          //setOnHold(false);
         }}
         onMouseDown={(event: MouseEvent<HTMLDivElement>) => {
           setDragStartPos([event.clientX, event.clientY]);
@@ -98,42 +79,19 @@ const Card: React.FC<{ index: number; card: ICard; frame: Frame }> = ({ index, c
         }}
         onMouseUp={() => setOnHold(false)}
         onMouseMove={handleMouseMove}
-        onClick={() => {
-          setActive(true);
-        }}
+        onClick={() => setShowHud(true)}
       />
-      {active && (
-        <>
-          <div className={cardHud(pos, frame.w, frame.h)}>
-            <div className={cardHudRow}>
-              <span>rotation</span>
-              <input
-                type="range"
-                min="-360"
-                max="360"
-                value={rot}
-                onChange={(e) => handleRotChange(Number(e.target.value))}
-              />
-              <input type="text" disabled={true} value={rot} />
-            </div>
-            <div className={cardHudRow}>
-              <span>index</span>
-              <button onClick={() => handleIndexChange(zIndex - 1)}>{'<'}</button>
-              <button onClick={() => handleIndexChange(zIndex + 1)}>{'>'}</button>
-              <input type="text" disabled={true} value={zIndex} />
-            </div>
 
-            <div className={cardHudRow}>
-              <span>value</span>
-              <input type="text" disabled={true} value={card.value} />
-            </div>
-
-            <div className={cardHudRow}>
-              <span>kind</span>
-              <input type="text" disabled={true} value={card.kind} />
-            </div>
-          </div>
-        </>
+      {showHud && (
+        <CardHud
+          card={card}
+          position={position}
+          rotation={rotation}
+          zIndex={zIndex}
+          handleRotationChange={handleRotationChange}
+          handleIndexChange={handleIndexChange}
+          onClose={() => setShowHud(false)}
+        />
       )}
     </>
   );
@@ -172,22 +130,6 @@ const highlighter = (pos: [number, number], w: number, h: number, rot: number) =
     top: pos[1] - h / 2,
     zIndex: 998,
     transform: `rotate(${rot}deg)`,
-  });
-
-const cardHud = (pos: [number, number], w: number, h: number) =>
-  css({
-    width: 250,
-    backgroundColor: '#fff',
-    border: '1px solid #f5f5f5',
-    cursor: 'pointer',
-    zIndex: 999,
-    marginTop: 4,
-    padding: 5,
-    marginLeft: 80,
-    borderRadius: 4,
-    position: 'absolute',
-    left: pos[0] - w / 2,
-    top: pos[1] - h / 2,
   });
 
 const cardHudRow = css({

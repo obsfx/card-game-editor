@@ -21,7 +21,6 @@ const boardPreview = css({
   backgroundColor: '#43ffcc',
   border: '1px solid #222',
   position: 'relative',
-  boxSizing: 'border-box',
 });
 
 export default BoardPreview;
