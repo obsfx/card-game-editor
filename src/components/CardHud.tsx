@@ -3,6 +3,7 @@ import { css } from '@emotion/css';
 import { BsArrowUp, BsArrowDown } from 'react-icons/bs';
 import { Card } from '../types';
 import { useClickOutListener } from '../hooks/useOutClickHandler';
+import { FaTrash } from 'react-icons/fa';
 
 const CardHud: React.FC<{
   card: Card;
@@ -12,7 +13,17 @@ const CardHud: React.FC<{
   handleRotationChange: (value: number) => void;
   handleIndexChange: (value: number) => void;
   onClose: () => void;
-}> = ({ card, position, rotation, zIndex, handleRotationChange, handleIndexChange, onClose }) => {
+  onDelete: () => void;
+}> = ({
+  card,
+  position,
+  rotation,
+  zIndex,
+  handleRotationChange,
+  handleIndexChange,
+  onClose,
+  onDelete,
+}) => {
   const cardRef = useRef<HTMLDivElement>(null);
   useClickOutListener(cardRef, onClose, [`hud-parent-${card.id}`]);
 
@@ -94,6 +105,13 @@ const CardHud: React.FC<{
           </div>
         </div>
       </div>
+
+      <div className={cardHudRow}>
+        <button className={cardHudButton} onClick={onDelete}>
+          <span>Delete</span>
+          <FaTrash />
+        </button>
+      </div>
     </div>
   );
 };
@@ -171,6 +189,20 @@ const cardHudValue = css({
     padding: '1px 8px',
     borderRadius: 4,
     fontFamily: 'monospace',
+  },
+});
+
+const cardHudButton = css({
+  backgroundColor: 'red',
+  padding: '4px 8px',
+  borderRadius: 4,
+  color: '#ffffff',
+  display: 'flex',
+  alignItems: 'center',
+  border: 'none',
+  cursor: 'pointer',
+  '& span': {
+    marginRight: 4,
   },
 });
 

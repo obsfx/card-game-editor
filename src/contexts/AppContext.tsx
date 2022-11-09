@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from
 import { v4 as uuidv4 } from 'uuid';
 
 import { CARD, CARD_SUIT } from '../contants';
-import { AtlasData, Card, SelectedCard } from '../types';
+import { AtlasData, Card, SelectedCard, TargetCard } from '../types';
 import { calculateTargetPos } from '../utils';
 
 export interface IAppContext {
@@ -14,9 +14,10 @@ export interface IAppContext {
   setSelectedCard: Dispatch<SetStateAction<SelectedCard | null>>;
   cards: Card[];
   setCards: Dispatch<SetStateAction<Card[]>>;
-  output: Record<string, unknown[]>;
+  output: TargetCard[];
   createCard: (cardValue: number, suitValue: number) => void;
-  updateCard: (index: string, props: Record<string, unknown>) => void;
+  updateCard: (id: string, props: Record<string, unknown>) => void;
+  removeCard: (id: string) => void;
 }
 
 const AppContext = React.createContext<IAppContext | null>(null);
@@ -30,7 +31,8 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [imageB64, setImageB64] = useState('');
   const [selectedCard, setSelectedCard] = useState<SelectedCard | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
-  const [output, setOutput] = useState<Record<string, unknown[]>>({ tableArray: [] });
+  //const [output, setOutput] = useState<Record<string, unknown[]>>({ tableArray: [] });
+  const [output, setOutput] = useState<TargetCard[]>([]);
 
   const createCard = (cardValue: number, suitValue: number) => {
     if (!json) {
@@ -69,16 +71,19 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     );
   };
 
+  const removeCard = (id: string) => {
+    setCards((prev) => prev.filter((card) => card.id !== id));
+  };
+
   useEffect(() => {
     const sortedCards = cards.sort((a, b) => a.zIndex - b.zIndex);
-    const output: Record<string, unknown[]> = {
-      tableArray: [],
-    };
+    const output: TargetCard[] = [];
+
     for (let i = 0; i < sortedCards.length; i++) {
       const card = sortedCards[i];
       const tablePos = calculateTargetPos(card.x, card.y);
 
-      output.tableArray.push({
+      output.push({
         Position: [tablePos.x, tablePos.y],
         Angle: card.angle,
         Value: card.value,
@@ -103,6 +108,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         output,
         createCard,
         updateCard,
+        removeCard,
       }}
     >
       {children}

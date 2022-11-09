@@ -9,7 +9,7 @@ const BoardPreview: React.FC = () => {
 
   return (
     <div className={boardPreview}>
-      {cards.map((card, idx) => {
+      {cards.map((card) => {
         return <Card key={card.id} card={card} frame={card.frame} />;
       })}
     </div>

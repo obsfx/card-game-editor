@@ -29,3 +29,10 @@ export interface SelectedCard {
   kind: number;
   frame: Frame;
 }
+
+export interface TargetCard {
+  Position: [number, number];
+  Angle: number;
+  Value: number;
+  Kind: number;
+}

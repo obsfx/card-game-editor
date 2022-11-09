@@ -15,14 +15,12 @@ const App: React.FC = () => {
 
         <div className={bodyWrapper}>
           <BoardPreview />
-          <div>
+          <div className={rightWrapper}>
             <div className={cardPreviewWrapper}>
               <SelectedCardPreview />
               <CardSelection />
             </div>
-            <div className={outputWrapper}>
-              <Output />
-            </div>
+            <Output />
           </div>
         </div>
       </div>
@@ -45,15 +43,12 @@ const cardPreviewWrapper = css({
   display: 'flex',
   alignItems: 'center',
   margin: 5,
+  height: 126,
 });
 
-const outputWrapper = css({
-  border: '1px solid #f2f2f2',
-  width: 400,
-  margin: 10,
-  padding: 5,
-  maxHeight: 600,
-  overflow: 'auto',
+const rightWrapper = css({
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 export default App;

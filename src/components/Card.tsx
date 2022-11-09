@@ -6,7 +6,7 @@ import CardHud from './CardHud';
 import { BOARD_H, BOARD_W } from '../contants';
 
 const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
-  const { imageB64, updateCard } = useAppContext();
+  const { imageB64, updateCard, removeCard } = useAppContext();
 
   const [dragStartPos, setDragStartPos] = useState<[number, number]>([0, 0]);
   const [position, setPosition] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
@@ -105,6 +105,7 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
           handleRotationChange={handleRotationChange}
           handleIndexChange={handleIndexChange}
           onClose={() => setShowHud(false)}
+          onDelete={() => removeCard(card.id)}
         />
       )}
     </>
