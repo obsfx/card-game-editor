@@ -38,12 +38,20 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
   };
 
   const handleIndexChange = (zIndex: number) => {
+    if (isNaN(zIndex)) {
+      return;
+    }
+
     updateCard(card.id, {
       zIndex,
     });
   };
 
   const handleRotationChange = (angle: number) => {
+    if (isNaN(angle)) {
+      return;
+    }
+
     updateCard(card.id, {
       ...card,
       angle,
