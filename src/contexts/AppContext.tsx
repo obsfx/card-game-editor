@@ -2,7 +2,8 @@ import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from
 import { v4 as uuidv4 } from 'uuid';
 
 import { CARD, CARD_SUIT } from '../contants';
-import { AtlasData, Card, Frame, SelectedCard } from '../types';
+import { AtlasData, Card, SelectedCard } from '../types';
+import { calculateTargetPos } from '../utils';
 
 export interface IAppContext {
   json: AtlasData | null;
@@ -56,7 +57,6 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const updateCard = (id: string, props: Record<string, unknown>) => {
     setCards((prev) =>
       prev.map((card) => {
-        console.log('tick', card.id !== id, card.id, id, props);
         if (card.id !== id) {
           return card;
         }
@@ -69,24 +69,6 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     );
   };
 
-  const calculateTablePos = (x: number, y: number) => {
-    const BOUND_X = 540;
-    const BOUND_Y = 600;
-    const BOARD_W = 414;
-    const BOARD_H = 896;
-
-    return {
-      x:
-        x < BOARD_W / 2
-          ? -(BOUND_X / (BOARD_W / 2)) * (BOARD_W / 2 - x)
-          : (BOUND_X / (BOARD_W / 2)) * (x - BOARD_W / 2),
-      y:
-        y < BOARD_H / 2
-          ? (BOUND_Y / (BOARD_H / 2)) * (BOARD_H / 2 - y)
-          : -(BOUND_Y / (BOARD_H / 2)) * (y - BOARD_H / 2),
-    };
-  };
-
   useEffect(() => {
     const sortedCards = cards.sort((a, b) => a.zIndex - b.zIndex);
     const output: Record<string, unknown[]> = {
@@ -94,7 +76,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     };
     for (let i = 0; i < sortedCards.length; i++) {
       const card = sortedCards[i];
-      const tablePos = calculateTablePos(card.x, card.y);
+      const tablePos = calculateTargetPos(card.x, card.y);
 
       output.tableArray.push({
         Position: [tablePos.x, tablePos.y],

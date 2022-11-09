@@ -4,7 +4,7 @@ import { CARD, CARD_SUIT } from '../contants';
 import { useAppContext } from '../contexts/AppContext';
 
 const CardSelection: React.FC = () => {
-  const { json, imageB64, createCard, selectedCard } = useAppContext();
+  const { json, imageB64, createCard, selectedCard, setSelectedCard } = useAppContext();
   const [data, setData] = useState({ value: 1, kind: 0 });
 
   if (!json || !imageB64) {
@@ -14,6 +14,13 @@ const CardSelection: React.FC = () => {
   const handleCardSelect = (event: ChangeEvent<HTMLSelectElement>) => {
     const data = JSON.parse(event.target.value);
     setData(data);
+
+    const { imageKey, ...rest } = data;
+    const frame = json.frames[data.imageKey].frame;
+    setSelectedCard({
+      ...rest,
+      frame,
+    });
   };
 
   const handleCardAdd = () => {
@@ -34,6 +41,7 @@ const CardSelection: React.FC = () => {
                 <option
                   key={imageKey}
                   value={JSON.stringify({
+                    imageKey,
                     value: cardIdx + 1,
                     kind: suitIdx,
                   })}

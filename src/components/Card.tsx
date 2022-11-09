@@ -1,14 +1,14 @@
-import React, { useState, MouseEvent, useRef } from 'react';
+import React, { useState, MouseEvent } from 'react';
 import { css } from '@emotion/css';
 import { useAppContext } from '../contexts/AppContext';
 import { Card as ICard, Frame } from '../types';
 import CardHud from './CardHud';
+import { BOARD_H, BOARD_W } from '../contants';
 
 const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
   const { imageB64, updateCard } = useAppContext();
 
   const [dragStartPos, setDragStartPos] = useState<[number, number]>([0, 0]);
-
   const [position, setPosition] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
 
   const [showHud, setShowHud] = useState(false);
@@ -20,6 +20,8 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
       return;
     }
 
+    setDragStartPos([event.clientX, event.clientY]);
+
     const [x, y] = dragStartPos;
     const [currentX, currentY] = position;
 
@@ -28,8 +30,15 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
     const newX = currentX + diffX;
     const newY = currentY + diffY;
 
-    setPosition([currentX + diffX, currentY + diffY]);
-    setDragStartPos([event.clientX, event.clientY]);
+    if (newX > BOARD_W || newX < 0) {
+      return;
+    }
+
+    if (newY > BOARD_H || newY < 0) {
+      return;
+    }
+
+    setPosition([newX, newY]);
 
     updateCard(card.id, {
       x: newX,
@@ -38,7 +47,7 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
   };
 
   const handleIndexChange = (zIndex: number) => {
-    if (isNaN(zIndex)) {
+    if (isNaN(zIndex) || zIndex < 0) {
       return;
     }
 
@@ -70,12 +79,13 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
           frame.w,
           frame.h,
           card.angle,
-          card.zIndex
+          card.zIndex,
+          onHold || onHover
         )}
         onMouseEnter={() => setOnHover(true)}
         onMouseLeave={() => {
           setOnHover(false);
-          //setOnHold(false);
+          setOnHold(false);
         }}
         onMouseDown={(event: MouseEvent<HTMLDivElement>) => {
           setDragStartPos([event.clientX, event.clientY]);
@@ -109,7 +119,8 @@ const cardWrapper = (
   w: number,
   h: number,
   rot: number,
-  zIndex: number
+  zIndex: number,
+  active: boolean
 ) =>
   css({
     width: w,
@@ -120,46 +131,7 @@ const cardWrapper = (
     top: pos[1] - h / 2,
     zIndex: zIndex + 2,
     transform: `rotate(${rot}deg)`,
+    border: `1px solid ${active ? '#222' : 'transparent'}`,
   });
-
-const highlighter = (pos: [number, number], w: number, h: number, rot: number) =>
-  css({
-    width: w * 1.1,
-    height: h * 1.1,
-    marginLeft: -(w * 1.1 - w) / 1.1,
-    marginTop: -(h * 1.1 - h) / 1.1,
-    border: '1px dashed #222',
-    position: 'absolute',
-    left: pos[0] - w / 2,
-    top: pos[1] - h / 2,
-    zIndex: 998,
-    transform: `rotate(${rot}deg)`,
-  });
-
-const cardHudRow = css({
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: 2,
-  '& span': {
-    marginRight: 6,
-    width: '25%',
-  },
-
-  '& button': {
-    marginRight: 2,
-    width: '25%',
-  },
-
-  '& input': {
-    marginLeft: 6,
-    width: '50%',
-  },
-
-  '& input[type="text"]': {
-    flexShrink: 0,
-    marginLeft: 6,
-    width: '25%',
-  },
-});
 
 export default Card;
