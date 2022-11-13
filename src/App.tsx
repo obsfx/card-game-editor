@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { css } from '@emotion/css';
 import FileInputs from './components/FileInputs';
 import SelectedCardPreview from './components/SelectedCardPreview';
@@ -9,6 +9,17 @@ import Output from './components/Output';
 import ScreenSize from './components/ScreenSize';
 
 const App: React.FC = () => {
+  useEffect(() => {
+    const unloadCallback = (event: any) => {
+      event.preventDefault();
+      event.returnValue = '';
+      return '';
+    };
+
+    window.addEventListener('beforeunload', unloadCallback);
+    return () => window.removeEventListener('beforeunload', unloadCallback);
+  }, []);
+
   return (
     <AppContextProvider>
       <div className={app}>
