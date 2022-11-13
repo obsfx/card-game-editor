@@ -1,3 +1,9 @@
+export interface ScreenSize {
+  label: string;
+  width: number;
+  height: number;
+}
+
 export interface Frame {
   x: number;
   y: number;

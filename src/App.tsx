@@ -6,13 +6,13 @@ import CardSelection from './components/CardSelection';
 import { AppContextProvider } from './contexts/AppContext';
 import BoardPreview from './components/BoardPreview';
 import Output from './components/Output';
+import ScreenSize from './components/ScreenSize';
 
 const App: React.FC = () => {
   return (
     <AppContextProvider>
       <div className={app}>
-        <FileInputs />
-
+        <ScreenSize />
         <div className={bodyWrapper}>
           <BoardPreview />
           <div className={rightWrapper}>
@@ -20,6 +20,7 @@ const App: React.FC = () => {
               <SelectedCardPreview />
               <CardSelection />
             </div>
+            <FileInputs />
             <Output />
           </div>
         </div>
@@ -31,12 +32,13 @@ const App: React.FC = () => {
 const app = css({
   fontFamily: 'sans-serif',
   fontSize: 12,
+  margin: 14,
 });
 
 const bodyWrapper = css({
   display: 'flex',
   alignItems: 'flex-start',
-  margin: 10,
+  marginTop: 10,
 });
 
 const cardPreviewWrapper = css({
@@ -49,6 +51,8 @@ const cardPreviewWrapper = css({
 const rightWrapper = css({
   display: 'flex',
   flexDirection: 'column',
+  marginLeft: 10,
+  width: 450,
 });
 
 export default App;

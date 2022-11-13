@@ -1,4 +1,4 @@
-import { BOUND_X, BOUND_Y, BOARD_W, BOARD_H } from './contants';
+import { BOUND_X, BOUND_Y, TABLE_BOUND_RATIO, BOARD_SCALE } from './contants';
 
 export const getJSON = (file: File) => {
   return new Promise((resolve, reject) => {
@@ -18,7 +18,22 @@ export const getImage = (file: File) => {
   });
 };
 
-export const calculateTargetPos = (x: number, y: number) => {
+export const calculateCardTableBounds = (BOARD_W: number, BOARD_H: number) => {
+  const ABSOLUTE_WIDTH = BOARD_W * BOARD_SCALE.width;
+  const ABSOLUTE_HEIGHT = BOARD_H * BOARD_SCALE.height;
+
+  let width = ABSOLUTE_WIDTH;
+  let height = ABSOLUTE_WIDTH * TABLE_BOUND_RATIO.LANDSCAPE_ABS_WIDTH;
+
+  if (height > ABSOLUTE_HEIGHT) {
+    height = ABSOLUTE_HEIGHT;
+    width = ABSOLUTE_HEIGHT * TABLE_BOUND_RATIO.PORTRAIT_ABS_HEIGHT;
+  }
+
+  return { width, height };
+};
+
+export const calculateTargetPos = (x: number, y: number, BOARD_W: number, BOARD_H: number) => {
   return {
     x:
       x < BOARD_W / 2

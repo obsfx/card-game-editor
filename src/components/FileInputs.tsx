@@ -44,10 +44,21 @@ const FileInputs: React.FC = () => {
 
 const inputWrapper = css({
   display: 'flex',
+  flexDirection: 'column',
+  border: '1px solid #ddd',
+  borderRadius: 5,
+  backgroundColor: '#f9f9f9',
+  overflow: 'hidden',
+  width: '100%',
+  boxSizing: 'border-box',
 });
 
 const row = css({
-  padding: 5,
+  padding: 10,
+  borderBottom: '1px solid #ddd',
+  '&:last-child': {
+    border: 'none',
+  },
 });
 
 export default FileInputs;

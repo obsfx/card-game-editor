@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
 import { css } from '@emotion/css';
+import { FaTrash } from 'react-icons/fa';
 import { BsArrowUp, BsArrowDown } from 'react-icons/bs';
 import { Card } from '../types';
 import { useClickOutListener } from '../hooks/useOutClickHandler';
-import { FaTrash } from 'react-icons/fa';
+import { minimalInput, minimalButton, redButtonWithIcon } from '../sharedStyles';
 
 const CardHud: React.FC<{
   card: Card;
@@ -47,6 +48,7 @@ const CardHud: React.FC<{
           <div className={cardHudValue}>
             <input
               type="text"
+              className={minimalInput}
               value={rotation}
               onChange={(e) => handleRotationChange(Number(e.target.value))}
             />
@@ -61,10 +63,10 @@ const CardHud: React.FC<{
 
         <div className={cardHudInputWrapper}>
           <div className={cardHudInput}>
-            <button onClick={() => handleIndexChange(zIndex - 1)}>
+            <button className={minimalButton} onClick={() => handleIndexChange(zIndex - 1)}>
               <BsArrowDown />
             </button>
-            <button onClick={() => handleIndexChange(zIndex + 1)}>
+            <button className={minimalButton} onClick={() => handleIndexChange(zIndex + 1)}>
               <BsArrowUp />
             </button>
           </div>
@@ -72,6 +74,7 @@ const CardHud: React.FC<{
           <div className={cardHudValue}>
             <input
               type="text"
+              className={minimalInput}
               value={zIndex}
               onChange={(e) => handleIndexChange(Number(e.target.value))}
             />
@@ -86,7 +89,7 @@ const CardHud: React.FC<{
         <div className={cardHudInputWrapper}>
           <div className={cardHudInput}>
             <div className={cardHudValue}>
-              <input type="number" readOnly={true} value={card.value} />
+              <input type="number" className={minimalInput} readOnly={true} value={card.value} />
             </div>
           </div>
         </div>
@@ -100,14 +103,14 @@ const CardHud: React.FC<{
         <div className={cardHudInputWrapper}>
           <div className={cardHudInput}>
             <div className={cardHudValue}>
-              <input type="number" readOnly={true} value={card.kind} />
+              <input type="number" className={minimalInput} readOnly={true} value={card.kind} />
             </div>
           </div>
         </div>
       </div>
 
       <div className={cardHudRow}>
-        <button className={cardHudButton} onClick={onDelete}>
+        <button className={redButtonWithIcon} onClick={onDelete}>
           <span>Delete</span>
           <FaTrash />
         </button>
@@ -118,7 +121,7 @@ const CardHud: React.FC<{
 
 const cardHud = (pos: [number, number], w: number, h: number) =>
   css({
-    minWidth: 250,
+    width: 300,
     backgroundColor: '#fff',
     zIndex: 9999,
     padding: 8,
@@ -157,18 +160,6 @@ const cardHudInputWrapper = css({
   flex: 1,
   justifyContent: 'space-between',
   height: 18,
-  '& button': {
-    border: 'none',
-    borderRadius: 4,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '4px 0',
-    marginRight: 2,
-    flex: 1,
-    background: '#c6c6c6',
-    cursor: 'pointer',
-  },
 });
 
 const cardHudInput = css({
@@ -179,31 +170,6 @@ const cardHudInput = css({
 
 const cardHudValue = css({
   display: 'flex',
-
-  '& input[type="number"], input[type="text"]': {
-    flexShrink: 0,
-    width: 30,
-    backgroundColor: '#ffffff',
-    fontSize: 12,
-    border: 'none',
-    padding: '1px 8px',
-    borderRadius: 4,
-    fontFamily: 'monospace',
-  },
-});
-
-const cardHudButton = css({
-  backgroundColor: 'red',
-  padding: '4px 8px',
-  borderRadius: 4,
-  color: '#ffffff',
-  display: 'flex',
-  alignItems: 'center',
-  border: 'none',
-  cursor: 'pointer',
-  '& span': {
-    marginRight: 4,
-  },
 });
 
 export default CardHud;

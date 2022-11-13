@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CARD, CARD_SUIT } from '../contants';
-import { AtlasData, Card, SelectedCard, TargetCard } from '../types';
-import { calculateTargetPos } from '../utils';
+import { CARD, CARD_SUIT, SCREEN_SIZES } from '../contants';
+import { AtlasData, Card, ScreenSize, SelectedCard, TargetCard } from '../types';
+import { calculateTargetPos, calculateCardTableBounds } from '../utils';
 
 export interface IAppContext {
   json: AtlasData | null;
@@ -18,6 +18,9 @@ export interface IAppContext {
   createCard: (cardValue: number, suitValue: number) => void;
   updateCard: (id: string, props: Record<string, unknown>) => void;
   removeCard: (id: string) => void;
+  selectedScreenSize: ScreenSize;
+  boundWidth: number;
+  boundHeight: number;
 }
 
 const AppContext = React.createContext<IAppContext | null>(null);
@@ -31,8 +34,13 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [imageB64, setImageB64] = useState('');
   const [selectedCard, setSelectedCard] = useState<SelectedCard | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
-  //const [output, setOutput] = useState<Record<string, unknown[]>>({ tableArray: [] });
   const [output, setOutput] = useState<TargetCard[]>([]);
+
+  const selectedScreenSize = SCREEN_SIZES[1];
+  const { width: boundWidth, height: boundHeight } = calculateCardTableBounds(
+    selectedScreenSize.width,
+    selectedScreenSize.height
+  );
 
   const createCard = (cardValue: number, suitValue: number) => {
     if (!json) {
@@ -81,7 +89,8 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
     for (let i = 0; i < sortedCards.length; i++) {
       const card = sortedCards[i];
-      const tablePos = calculateTargetPos(card.x, card.y);
+
+      const tablePos = calculateTargetPos(card.x, card.y, boundWidth, boundHeight);
 
       output.push({
         Position: [tablePos.x, tablePos.y],
@@ -92,7 +101,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
 
     setOutput(output);
-  }, [cards]);
+  }, [cards, selectedScreenSize, boundWidth, boundHeight]);
 
   return (
     <AppContext.Provider
@@ -109,6 +118,9 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         createCard,
         updateCard,
         removeCard,
+        selectedScreenSize,
+        boundWidth,
+        boundHeight,
       }}
     >
       {children}

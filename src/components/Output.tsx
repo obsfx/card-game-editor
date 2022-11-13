@@ -14,12 +14,13 @@ const Output: React.FC = () => {
 };
 const outputWrapper = css({
   border: '1px solid #ddd',
-  width: 420,
-  margin: 10,
+  width: '100%',
   padding: 5,
-  height: 740,
+  maxHeight: 670,
   overflow: 'auto',
   borderRadius: 8,
+  boxSizing: 'border-box',
+  marginTop: 10,
 });
 
 export default Output;
