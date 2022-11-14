@@ -25,8 +25,8 @@ export const SCREEN_SIZES: ScreenSize[] = [
 ];
 
 export const TABLE_BOUND_RATIO = {
-  LANDSCAPE_ABS_WIDTH: 10 / 9,
-  PORTRAIT_ABS_HEIGHT: 9 / 10,
+  LANDSCAPE_ABS_WIDTH: 670 / 414,
+  PORTRAIT_ABS_HEIGHT: 414 / 670,
 };
 
 export const BOARD_SCALE = {

@@ -4,11 +4,10 @@ import { useAppContext } from '../contexts/AppContext';
 import Card from './Card';
 
 const BoardPreview: React.FC = () => {
-  const { cards, selectedScreenSize, tableScale } = useAppContext();
+  const { cards, selectedScreenSize, boundWidth, boundHeight } = useAppContext();
 
-  const [w, h] = tableScale;
-  const tableSizeW = selectedScreenSize.width * w;
-  const tableSizeH = selectedScreenSize.height * h;
+  const tableSizeW = boundWidth;
+  const tableSizeH = boundHeight;
 
   return (
     <div className={boardPreview(selectedScreenSize.width, selectedScreenSize.height)}>
