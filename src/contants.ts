@@ -31,5 +31,5 @@ export const TABLE_BOUND_RATIO = {
 
 export const BOARD_SCALE = {
   width: 1,
-  height: 0.7,
+  height: 0.75,
 };

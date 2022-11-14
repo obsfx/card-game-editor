@@ -37,10 +37,12 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [output, setOutput] = useState<TargetCard[]>([]);
 
   const selectedScreenSize = SCREEN_SIZES[1];
-  const { width: boundWidth, height: boundHeight } = calculateCardTableBounds(
-    selectedScreenSize.width,
-    selectedScreenSize.height
-  );
+  const {
+    width: boundWidth,
+    height: boundHeight,
+    leftAbsoluteX,
+    topAbsoluteY,
+  } = calculateCardTableBounds(selectedScreenSize.width, selectedScreenSize.height);
 
   const createCard = (cardValue: number, suitValue: number) => {
     if (!json) {
@@ -90,7 +92,12 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     for (let i = 0; i < sortedCards.length; i++) {
       const card = sortedCards[i];
 
-      const tablePos = calculateTargetPos(card.x, card.y, boundWidth, boundHeight);
+      const tablePos = calculateTargetPos(
+        card.x - leftAbsoluteX,
+        card.y - topAbsoluteY,
+        boundWidth,
+        boundHeight
+      );
 
       output.push({
         Position: [tablePos.x, tablePos.y],
@@ -101,7 +108,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
 
     setOutput(output);
-  }, [cards, selectedScreenSize, boundWidth, boundHeight]);
+  }, [cards, selectedScreenSize, boundWidth, boundHeight, leftAbsoluteX, topAbsoluteY]);
 
   return (
     <AppContext.Provider

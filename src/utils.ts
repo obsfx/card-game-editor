@@ -24,13 +24,17 @@ export const calculateCardTableBounds = (BOARD_W: number, BOARD_H: number) => {
 
   let width = ABSOLUTE_WIDTH;
   let height = ABSOLUTE_WIDTH * TABLE_BOUND_RATIO.LANDSCAPE_ABS_WIDTH;
+  let leftAbsoluteX = 0;
+  let topAbsoluteY = (ABSOLUTE_HEIGHT - height) / 2;
 
   if (height > ABSOLUTE_HEIGHT) {
     height = ABSOLUTE_HEIGHT;
     width = ABSOLUTE_HEIGHT * TABLE_BOUND_RATIO.PORTRAIT_ABS_HEIGHT;
+    leftAbsoluteX = (ABSOLUTE_WIDTH - width) / 2;
+    topAbsoluteY = 0;
   }
 
-  return { width, height };
+  return { width, height, leftAbsoluteX, topAbsoluteY };
 };
 
 export const calculateTargetPos = (x: number, y: number, BOARD_W: number, BOARD_H: number) => {
