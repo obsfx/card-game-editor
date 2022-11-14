@@ -1,4 +1,4 @@
-import { BOUND_X, BOUND_Y, TABLE_BOUND_RATIO, BOARD_SCALE } from './contants';
+import { BOUND_X, BOUND_Y, TABLE_BOUND_RATIO } from './contants';
 
 export const getJSON = (file: File) => {
   return new Promise((resolve, reject) => {
@@ -18,7 +18,14 @@ export const getImage = (file: File) => {
   });
 };
 
-export const calculateCardTableBounds = (BOARD_W: number, BOARD_H: number) => {
+export const calculateCardTableBounds = (
+  BOARD_W: number,
+  BOARD_H: number,
+  BOARD_SCALE: {
+    width: number;
+    height: number;
+  }
+) => {
   const ABSOLUTE_WIDTH = BOARD_W * BOARD_SCALE.width;
   const ABSOLUTE_HEIGHT = BOARD_H * BOARD_SCALE.height;
 
@@ -48,4 +55,9 @@ export const calculateTargetPos = (x: number, y: number, BOARD_W: number, BOARD_
         ? (BOUND_Y / (BOARD_H / 2)) * (BOARD_H / 2 - y)
         : -(BOUND_Y / (BOARD_H / 2)) * (y - BOARD_H / 2),
   };
+};
+
+export const getCardScaleMultilier = (boundW: number, boundH: number, cardScale: number) => {
+  const shortEdge = Math.min(boundW, boundH);
+  return shortEdge * cardScale;
 };

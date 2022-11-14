@@ -1,8 +1,6 @@
-import { ChangeEvent } from 'react';
 import { css } from '@emotion/css';
-import { SCREEN_SIZES } from '../contants';
 import { useAppContext } from '../contexts/AppContext';
-import { minimalInput, minimalButton, redButtonWithIcon } from '../sharedStyles';
+import { minimalInput } from '../sharedStyles';
 
 const ScreenSizeSelection: React.FC = () => {
   const { selectedScreenSize } = useAppContext();
@@ -33,6 +31,7 @@ const ScreenSizeSelection: React.FC = () => {
 const wrapper = css({
   display: 'flex',
   alignItems: 'center',
+  margin: '4px 0',
 });
 
 const sizeWrapper = css({

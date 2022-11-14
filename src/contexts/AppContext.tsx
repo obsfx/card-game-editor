@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { CARD, CARD_SUIT, SCREEN_SIZES } from '../contants';
+import { BOARD_SCALE, CARD, CARD_SCALE, CARD_SUIT, SCREEN_SIZES } from '../contants';
 import { AtlasData, Card, ScreenSize, SelectedCard, TargetCard } from '../types';
 import { calculateTargetPos, calculateCardTableBounds } from '../utils';
 
@@ -21,6 +21,10 @@ export interface IAppContext {
   selectedScreenSize: ScreenSize;
   boundWidth: number;
   boundHeight: number;
+  tableScale: [number, number];
+  setTableScale: Dispatch<SetStateAction<[number, number]>>;
+  cardScale: number;
+  setCardScale: Dispatch<SetStateAction<number>>;
 }
 
 const AppContext = React.createContext<IAppContext | null>(null);
@@ -35,6 +39,11 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [selectedCard, setSelectedCard] = useState<SelectedCard | null>(null);
   const [cards, setCards] = useState<Card[]>([]);
   const [output, setOutput] = useState<TargetCard[]>([]);
+  const [tableScale, setTableScale] = useState<[number, number]>([
+    BOARD_SCALE.width,
+    BOARD_SCALE.height,
+  ]);
+  const [cardScale, setCardScale] = useState(CARD_SCALE);
 
   const selectedScreenSize = SCREEN_SIZES[1];
   const {
@@ -42,7 +51,10 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     height: boundHeight,
     leftAbsoluteX,
     topAbsoluteY,
-  } = calculateCardTableBounds(selectedScreenSize.width, selectedScreenSize.height);
+  } = calculateCardTableBounds(selectedScreenSize.width, selectedScreenSize.height, {
+    width: tableScale[0],
+    height: tableScale[1],
+  });
 
   const createCard = (cardValue: number, suitValue: number) => {
     if (!json) {
@@ -128,6 +140,10 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         selectedScreenSize,
         boundWidth,
         boundHeight,
+        tableScale,
+        setTableScale,
+        cardScale,
+        setCardScale,
       }}
     >
       {children}

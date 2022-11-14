@@ -33,3 +33,5 @@ export const BOARD_SCALE = {
   width: 1,
   height: 0.75,
 };
+
+export const CARD_SCALE = 0.2;

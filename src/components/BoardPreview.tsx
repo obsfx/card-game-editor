@@ -2,13 +2,13 @@ import React from 'react';
 import { css } from '@emotion/css';
 import { useAppContext } from '../contexts/AppContext';
 import Card from './Card';
-import { BOARD_SCALE } from '../contants';
 
 const BoardPreview: React.FC = () => {
-  const { cards, selectedScreenSize } = useAppContext();
+  const { cards, selectedScreenSize, tableScale } = useAppContext();
 
-  const tableSizeW = selectedScreenSize.width * BOARD_SCALE.width;
-  const tableSizeH = selectedScreenSize.height * BOARD_SCALE.height;
+  const [w, h] = tableScale;
+  const tableSizeW = selectedScreenSize.width * w;
+  const tableSizeH = selectedScreenSize.height * h;
 
   return (
     <div className={boardPreview(selectedScreenSize.width, selectedScreenSize.height)}>

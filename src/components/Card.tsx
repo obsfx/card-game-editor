@@ -3,12 +3,24 @@ import { css } from '@emotion/css';
 import { useAppContext } from '../contexts/AppContext';
 import { Card as ICard, Frame } from '../types';
 import CardHud from './CardHud';
+import { getCardScaleMultilier } from '../utils';
 
 const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
-  const { imageB64, updateCard, removeCard, selectedScreenSize } = useAppContext();
+  const {
+    imageB64,
+    updateCard,
+    removeCard,
+    selectedScreenSize,
+    cardScale,
+    boundWidth,
+    boundHeight,
+  } = useAppContext();
 
   const [dragStartPos, setDragStartPos] = useState<[number, number]>([0, 0]);
   const [position, setPosition] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
+
+  const scaleMultiplier = getCardScaleMultilier(boundWidth, boundHeight, cardScale);
+  const scale = scaleMultiplier / frame.w;
 
   const [showHud, setShowHud] = useState(false);
   const [onHover, setOnHover] = useState(false);
@@ -79,7 +91,8 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
           frame.h,
           card.angle,
           card.zIndex,
-          onHold || onHover
+          onHold || onHover,
+          scale
         )}
         onMouseEnter={() => setOnHover(true)}
         onMouseLeave={() => {
@@ -120,7 +133,8 @@ const cardWrapper = (
   h: number,
   rot: number,
   zIndex: number,
-  active: boolean
+  active: boolean,
+  scale: number
 ) =>
   css({
     width: w,
@@ -130,7 +144,7 @@ const cardWrapper = (
     left: pos[0] - w / 2,
     top: pos[1] - h / 2,
     zIndex: zIndex + 2,
-    transform: `scale(1.1) rotate(${rot}deg)`,
+    transform: `scale(${scale}) rotate(${rot}deg)`,
     border: `1px solid ${active ? '#222' : 'transparent'}`,
   });
 

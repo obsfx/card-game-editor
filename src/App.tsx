@@ -7,6 +7,8 @@ import { AppContextProvider } from './contexts/AppContext';
 import BoardPreview from './components/BoardPreview';
 import Output from './components/Output';
 import ScreenSize from './components/ScreenSize';
+import TableScale from './components/TableScale';
+import CardScale from './components/CardScale';
 
 const App: React.FC = () => {
   useEffect(() => {
@@ -24,6 +26,8 @@ const App: React.FC = () => {
     <AppContextProvider>
       <div className={app}>
         <ScreenSize />
+        <TableScale />
+        <CardScale />
         <div className={bodyWrapper}>
           <BoardPreview />
           <div className={rightWrapper}>
