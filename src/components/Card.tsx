@@ -6,15 +6,7 @@ import CardHud from './CardHud';
 import { getCardScaleMultilier } from '../utils';
 
 const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
-  const {
-    imageB64,
-    updateCard,
-    removeCard,
-    selectedScreenSize,
-    cardScale,
-    boundWidth,
-    boundHeight,
-  } = useAppContext();
+  const { imageB64, updateCard, removeCard, cardScale, boundWidth, boundHeight } = useAppContext();
 
   const [dragStartPos, setDragStartPos] = useState<[number, number]>([0, 0]);
   const [position, setPosition] = useState<[number, number]>([frame.w / 2, frame.h / 2]);
@@ -41,11 +33,11 @@ const Card: React.FC<{ card: ICard; frame: Frame }> = ({ card, frame }) => {
     const newX = currentX + diffX;
     const newY = currentY + diffY;
 
-    if (newX > selectedScreenSize.width || newX < 0) {
+    if (newX > boundWidth || newX < 0) {
       return;
     }
 
-    if (newY > selectedScreenSize.height || newY < 0) {
+    if (newY > boundHeight || newY < 0) {
       return;
     }
 
