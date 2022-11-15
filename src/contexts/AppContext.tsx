@@ -104,12 +104,7 @@ export const AppContextProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     for (let i = 0; i < sortedCards.length; i++) {
       const card = sortedCards[i];
 
-      const tablePos = calculateTargetPos(
-        card.x - leftAbsoluteX,
-        card.y - topAbsoluteY,
-        boundWidth,
-        boundHeight
-      );
+      const tablePos = calculateTargetPos(card.x, card.y - topAbsoluteY, boundWidth, boundHeight);
 
       output.push({
         Position: [tablePos.x, tablePos.y],
